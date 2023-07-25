@@ -6,7 +6,7 @@
 
 # 配套后端项目地址
 
-[Personalblog: 可以上传md文件的.net6个人博客系统。 (gitee.com)](https://gitee.com/zyplj/personalblog)
+[Personalblog: 可以上传md文件的.net6个人博客系统。 (github.com)](https://github.com/ZyPLJ/personalblog)
 
 # 项目部分截图
 
