@@ -27,8 +27,11 @@
             <el-button size="mini" type="success" plain @click="setFeatured($index, row)">
               设置推荐
             </el-button>
-            <el-button size="mini" type="warning" plain @click="CancelFeatured($index, row)">
-              取消推荐
+            <el-button size="mini" type="primary" plain @click="UpdateCategory($index, row)">
+              修改分类
+            </el-button>
+            <el-button size="mini" type="danger" plain @click="DeleteCatgroy($index, row)">
+              删除
             </el-button>
             <el-button v-if="row.visible===true" size="mini" type="primary" plain
                        @click="SetInvisible(row)">
@@ -38,6 +41,7 @@
               <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
             </el-button>
             <SetFeaturedDialog ref="setFeaturedDialog"></SetFeaturedDialog>
+            <CategroyDialog ref="categroyDialog" :load="loadData"></CategroyDialog>
           </template>
         </el-table-column>
       </el-table>
@@ -47,18 +51,17 @@
 
 <script setup lang='ts'>
 import SetFeaturedDialog from "./SetFeaturedDialog.vue"
-import {ref,computed,onMounted} from 'vue'
-import {getAll,cancelFeatured,setVisible,setInvisible} from '../../http/modules/category'
-import { ElMessageBox,ElMessage } from "element-plus";
+import CategroyDialog from '../../components/categroy/categroyDialog.vue'
+
+import {ref,computed} from 'vue'
+import {getAll,setVisible,setInvisible,Delete} from '../../http/modules/category'
+import { ElMessage } from "element-plus";
 
 const data = ref()
 data.value = []
 const search = ref()
 const setFeaturedDialog = ref(null)
-
-onMounted(()=>{
-  
-})
+const categroyDialog = ref(null)
 
 const tableData = computed(()=>{
     return data.value.filter(item =>
@@ -75,17 +78,21 @@ const setFeatured = (index,item) =>{
   setFeaturedDialog.value.dialogshow(item.id)
 }
 
-const CancelFeatured = (index,item) =>{
-    ElMessageBox.confirm("确定吗？", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  }).then(()=>{
-      cancelFeatured(item.id)
-      .then(res => ElMessage.success(`操作成功。${res.message}`))
-      .catch(res => ElMessage.error(`操作失败。${res.message}`))
-  }).catch(() => ElMessage.warning('操作取消'))
+const UpdateCategory = (index,item) =>{
+  console.log(item.id)
+  categroyDialog.value.dialogshow(item.id)
 }
+// const CancelFeatured = (index,item) =>{
+//     ElMessageBox.confirm("确定吗？", {
+//     confirmButtonText: "确定",
+//     cancelButtonText: "取消",
+//     type: "warning",
+//   }).then(()=>{
+//       cancelFeatured(item.id)
+//       .then(res => ElMessage.success(`操作成功。${res.message}`))
+//       .catch(res => ElMessage.error(`操作失败。${res.message}`))
+//   }).catch(() => ElMessage.warning('操作取消'))
+// }
 
 const SetVisible = (item)=>{
         setVisible(item.id)
@@ -97,6 +104,13 @@ const SetVisible = (item)=>{
 const SetInvisible = (item) =>{
         setInvisible(item.id)
         .then(res => ElMessage.success(`操作成功。${res.message}`))
+        .catch(res => ElMessage.error(`操作失败。${res.message}`))
+        .finally(() => loadData())
+}
+
+const DeleteCatgroy = (index,item)=>{
+      Delete(item.id)
+      .then(res => ElMessage.success(`操作成功。${res.message}`))
         .catch(res => ElMessage.error(`操作失败。${res.message}`))
         .finally(() => loadData())
 }

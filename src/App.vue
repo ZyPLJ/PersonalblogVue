@@ -1,13 +1,20 @@
 <template>
+  <div :class="{ 'dark': isDark }">
     <router-view/>
+  </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { useDark,useToggle  } from '@vueuse/core';
+import { provide } from 'vue';
 
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 
-export default ({
-  name: 'App',
-});
+provide('theme',{
+  isDark,
+  toggleDark
+})
 </script>
 
 <style>
@@ -16,7 +23,6 @@ export default ({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   margin-top: 60px;
 }
 </style>

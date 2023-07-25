@@ -63,3 +63,20 @@ export const setInvisible = itemId => {
     method: 'post',
   })
 }
+
+//删除分类
+export const Delete = itemId =>{
+  return axios({
+    url: `Category/${itemId}`,
+    method: 'Delete',
+  })
+}
+
+//修改分类
+export const Update = (itemId,data) =>{
+  return axios({
+    url: `Category/${itemId}`,
+    method: 'put',
+    data
+  })
+}

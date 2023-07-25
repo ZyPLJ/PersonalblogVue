@@ -1,71 +1,116 @@
 <template>
   <div class="menu-bar-container">
     <!-- logo -->
-    <div
-      class="logo"
-      :style="{ background: themeColor, display: fullscreen ? 'none' : '' }"
-      :class="collapse ? 'menu-bar-collapse-width' : 'menu-bar-width'"
-      @click="router.push('/')"
-    >
-      <img v-if="collapse" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp.qqan.com%2Fup%2F2022-12%2F20221221511295206.png&refer=http%3A%2F%2Fp.qqan.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1672579733&t=4f3c701886041ed13fca7f44a39e71cc" />
-      <div>{{ collapse ? "" : appName }}</div>
-    </div>
     <!-- 导航菜单 -->
-    <el-menu
-      ref="navMenu"
-      :style="{ display: fullscreen ? 'none' : '' }"
-      :default-active="route.path"
-      :class="collapse ? 'menu-bar-collapse-width' : 'menu-bar-width'"
-      :collapse="collapse"
-      :collapse-transition="false"
-      :unique-opened="false"
-      router
-    >
-      <el-menu-item index="/">
-        <i class="fa fa-home"></i>
-        <span slot="title">主页</span>
+    <el-scrollbar>
+      <el-menu
+    ref="navMenu"
+    :collapse="collapse"
+    :collapse-transition="false"
+    :unique-opened="false"
+    default-active="/"
+    router
+  >
+    <el-menu-item style="border-bottom:1px solid gainsboro;
+    height: 60px;;line-height: 60px;">
+      <div
+        class="logo"
+        @click="router.push('/')"
+      >
+        <img v-if="collapse" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp.qqan.com%2Fup%2F2022-12%2F20221221511295206.png&refer=http%3A%2F%2Fp.qqan.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1672579733&t=4f3c701886041ed13fca7f44a39e71cc" />
+        <div style="margin-left:25px;color: #316c72;">{{ collapse ? "" : appName }}</div>
+      </div>
+    </el-menu-item>
+    <el-menu-item index="/">
+      <el-icon :size="15"><i class="fa fa-home fa-lg"></i></el-icon>
+      <span slot="title">主页</span>
+    </el-menu-item>
+    <el-sub-menu index="post" :route="{ meta: { breadcrumbName: '博客' } }">
+      <template #title>
+        <el-icon :size="15"><i class="fa fa-file-text"></i></el-icon>
+        <span>博客</span>
+      </template>
+      <el-menu-item index="/post/category/list">
+        <el-icon :size="15"><i class="fa fa-th-large"></i></el-icon>
+        <span slot="title">分类列表</span>
       </el-menu-item>
-      <el-sub-menu index="blog">
-        <template #title>
-          <i class="fa fa-map-marker"></i>
-          <span>博客</span>
-        </template>
-        <el-menu-item-group title="分类管理">
-          <el-menu-item index="/category/list">分类列表</el-menu-item>
-          <el-menu-item index="/category/featured">推荐分类</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="文章管理">
-          <el-menu-item index="/post/list">文章列表</el-menu-item>
-          <el-menu-item index="/post/featured">推荐文章</el-menu-item>
-          <el-menu-item index="/post/top">置顶文章</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="黑科技">
-          <el-menu-item index="/post/upload">打包上传</el-menu-item>
-        </el-menu-item-group>
-      </el-sub-menu>
-      <el-sub-menu index="photography">
-        <template #title>
-          <i class="fa fa-camera-retro"></i>
-          <span>摄影</span>
-        </template>
-        <el-menu-item-group title="照片管理">
-          <el-menu-item index="/photo/list">照片列表</el-menu-item>
-          <el-menu-item index="/photo/featured">推荐图片</el-menu-item>
-        </el-menu-item-group>
-      </el-sub-menu>
-      <el-menu-item index="/visit_record/list">
-        <i class="el-icon-menu"></i>
+      <el-menu-item index="/post/category/featured">
+        <el-icon :size="15"><i class="fa fa-star fa-lg"></i></el-icon>
+        <span slot="title">推荐分类</span>
+      </el-menu-item>
+      <el-menu-item index="/post/list">
+        <el-icon :size="15"><i class="fa fa-list-ul"></i></el-icon>
+        <span slot="title">文章列表</span>
+      </el-menu-item>
+      <el-menu-item index="/post/featured">
+        <el-icon :size="15"><i class="fa fa-thumbs-up"></i></el-icon>
+        <span slot="title">推荐文章</span>
+      </el-menu-item>
+      <el-menu-item index="/post/top">
+        <el-icon :size="15"><i class="fa fa-hand-o-up"></i></el-icon>
+        <span slot="title">置顶文章</span>
+      </el-menu-item>
+      <el-menu-item index="/post/upload">
+        <el-icon :size="15"><i class="fa fa-upload"></i></el-icon>
+        <span slot="title">打包上传</span>
+      </el-menu-item>
+    </el-sub-menu>
+    <el-sub-menu index="photo" :route="{ meta: { breadcrumbName: '摄影' } }">
+      <template #title>
+        <el-icon :size="15"><i class="fa fa-camera-retro"></i></el-icon>
+        <span>摄影</span>
+      </template>
+      <el-menu-item index="/photo/list">
+        <el-icon :size="15"><i class="fa fa-photo"></i></el-icon>
+        <span slot="title">照片列表</span>
+      </el-menu-item>
+      <el-menu-item index="/photo/featured">
+        <el-icon :size="15"><i class="fa fa-file-photo-o"></i></el-icon>
+        <span slot="title">推荐图片</span>
+      </el-menu-item>
+    </el-sub-menu>
+    <el-sub-menu index="/system" :route="{ meta: { breadcrumbName: '系统管理' } }">
+      <template #title>
+        <el-icon :size="15"><i class="fa fa-gear fa-lg"></i></el-icon>
+        <span>系统管理</span>
+      </template>
+      <el-menu-item index="/system/visit_record/list">
+        <el-icon :size="15"><i class="fa fa-clipboard"></i></el-icon>
         <span slot="title">访问日志</span>
       </el-menu-item>
-      <el-menu-item index="/config/list">
-        <i class="el-icon-s-tools"></i>
+      <el-menu-item index="/system/config/list">
+        <el-icon :size="15"><i class="fa fa-external-link-square"></i></el-icon>
         <span slot="title">配置中心</span>
       </el-menu-item>
-      <el-menu-item index="/link/list">
-        <i class="el-icon-link"></i>
-        <span slot="title">友情链接管理</span>
+      <el-menu-item index="/system/Comments/list">
+        <el-icon :size="15"><i class="fa fa-commenting"></i></el-icon>
+        <span slot="title">评论中心</span>
       </el-menu-item>
-    </el-menu>
+      <el-menu-item index="/system/Notice/list">
+        <el-icon :size="15"><i class="fa fa-newspaper-o"></i></el-icon>
+        <span slot="title">公告中心</span>
+      </el-menu-item>
+      <el-menu-item index="/system/MessageList">
+        <el-icon :size="15"><i class="fa fa-pencil-square"></i></el-icon>
+        <span slot="title">留言中心</span>
+      </el-menu-item>
+    </el-sub-menu>
+    <el-sub-menu index="link" :route="{ meta: { breadcrumbName: '友链管理' } }">
+      <template #title>
+        <el-icon :size="15"><i class="fa fa-users"></i></el-icon>
+        <span>友链管理</span>
+      </template>
+      <el-menu-item index="/link/list">
+        <el-icon :size="15"><i class="fa fa-link"></i></el-icon>
+        <span slot="title">友情链接</span>
+      </el-menu-item>
+      <el-menu-item index="/link_exchange/list">
+        <el-icon :size="15"><i class="fa fa-envelope-open"></i></el-icon>
+        <span slot="title">友链申请管理</span>
+      </el-menu-item>
+    </el-sub-menu>
+  </el-menu>
+  </el-scrollbar>
   </div>
 </template>
 
@@ -73,6 +118,7 @@
 import { mapState, useStore } from "vuex";
 import { computed, watch,ref,toRaw } from "vue";
 import { useRoute,useRouter } from "vue-router";
+
 
 const store = useStore();
 const route = useRoute();
@@ -146,50 +192,46 @@ handleRoute(route)
 </script>
 
 <style lang="scss" scoped>
-.menu-bar-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 1020;
+.scrollbar-demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+}
 
-  .el-menu {
-    position: absolute;
-    top: 60px;
-    bottom: 0;
-    text-align: left;
-  }
+.menu-bar-container {
+  width:200px;
+  position: fixed;
+  height: 100%;
+  box-shadow: 2px 0 8px #1d23290d;
+  transition: background-color 0.3s ease-in-out; 
 
   .logo {
     position: absolute;
-    top: 0;
-    height: 60px;
-    line-height: 60px;
-    background: #545c64;
+    bottom: 3px;
+    left:7px;
+    line-height:56px;
     cursor: pointer;
 
     img {
       width: 40px;
       height: 40px;
       border-radius: 0;
-      margin: 10px 10px 10px 10px;
-      float: left;
     }
 
     div {
       font-size: 22px;
-      color: white;
       text-align: left;
-      padding-left: 20px;
     }
   }
-
-  .menu-bar-width {
-    width: 200px;
-  }
-
-  .menu-bar-collapse-width {
-    width: 65px;
-  }
 }
+.el-menu-item.is-active {
+  background-color: #E2F7EB; /* 这里是你想要设置的当前菜单项背景颜色 */
+  border-left: 4px solid green; /* 这里是你想要设置的圆角边框样式 */
+  border-radius: 4px; /* 这里是你想要设置的圆角半径 */
+}
+
 </style>

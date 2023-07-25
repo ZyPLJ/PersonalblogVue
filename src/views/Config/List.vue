@@ -8,6 +8,7 @@
             ref="addConfigDialog"
             @onAddSucceed="onAddSucceed"
             @onUpdateSucceed="onUpdateSucceed"
+            @load = "loadData"
           ></AddConfigDialog>
         </div>
       </el-row>
@@ -34,14 +35,22 @@
           label="description"
           :show-overflow-tooltip="true"
         />
+        <el-table-column
+          prop="isShowComment"
+          label="isShowComment"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column fixed="right" label="操作" width="150">
-          <template slot-scope="scope">
-            <el-link type="info" @click="onItemEditClick(scope.row)"
-              >编辑</el-link
-            >
-            <el-link type="danger" @click="onItemDeleteClick(scope.row)"
-              >删除</el-link
-            >
+          <template #default="scope">
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          >修改评论是否可见</el-button
+        >
+        <el-button
+          size="small"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button
+        >
           </template>
         </el-table-column>
       </el-table>
@@ -52,7 +61,7 @@
 <script setup lang=ts>
 import AddConfigDialog from "../Config/AddDialog.vue";
 import { ref } from "vue";
-import { getAll } from "../../http/modules/config";
+import { getAll,isshow,deleteItem } from "../../http/modules/config";
 import { ElMessage } from "element-plus";
 
 const addConfigDialog = ref();
@@ -67,6 +76,28 @@ const loadData = () => {
 
 const handleAdd = ()=>{
   addConfigDialog.value.show()
+}
+
+const handleEdit =async (index: number, row) => {
+  console.log(row.id)
+  var res = await isshow(row.id)
+  if(res.statusCode == 200){
+    ElMessage.success(res.message)
+  }else{
+    ElMessage.error("修改可见失败！！！")
+  }
+  loadData()
+}
+
+const handleDelete = async (index: number, row) => {
+  console.log(row.id)
+  var res = await deleteItem(row.id)
+  if(res.statusCode == 200){
+    ElMessage.success(res.message)
+  }else{
+    ElMessage.error("修改可见失败！！！")
+  }
+  loadData()
 }
 
 loadData()

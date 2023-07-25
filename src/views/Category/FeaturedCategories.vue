@@ -6,7 +6,7 @@
     <el-table-column
       prop="description"
       label="推荐说明"
-      width="500"
+      width="300"
       :show-overflow-tooltip="true"
     >
     </el-table-column>
@@ -57,7 +57,7 @@ const cancelFeatured = (index, item) => {
       deleteItem(item.id)
         .then((res) => ElMessage.success(`操作成功。${res.message}`))
         .catch((res) => ElMessage.error(`操作失败。${res.message}`))
-        .finally(()=>loadData)
+        .finally(()=>loadData())
     })
     .catch(() => ElMessage.warning("操作取消"));
 };

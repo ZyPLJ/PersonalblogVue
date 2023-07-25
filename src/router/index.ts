@@ -16,6 +16,11 @@ import Photos from '../views/Photography/Photos.vue'
 import FeaturedPhotos from '../views/Photography/FeaturedPhotos.vue'
 import VisitRecordList from '../views/VisitRecord/List.vue'
 import ConfigList from '../views/Config/List.vue'
+import Comments from '../views/Comment/Comments.vue'
+import Notice from '../views/Notice/list.vue'
+import LinkList from '../views/Link/List.vue'
+import LinkExchangeList from '../views/LinkExchange/List.vue'
+import MessageList from '../views/Message/list.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -33,8 +38,8 @@ const router = createRouter({
                         index: 0
                     }
                 },
-                {path: '/category/list', name: '分类列表', component: Categories},
-                {path: 'category/featured', name: '推荐分类', component: FeaturedCategories},
+                {path: 'post/category/list', name: '分类列表', component: Categories},
+                {path: 'post/category/featured', name: '推荐分类', component: FeaturedCategories},
                 {path: 'post/list', name: '文章列表', component: Posts},
                 {path: 'post/edit/:id', name: '编辑文章', component: EditPost},
                 {path: 'post/new', name: '新增文章', component: EditPost},
@@ -43,8 +48,13 @@ const router = createRouter({
                 {path: 'post/upload', name: '上传文章', component: UploadPost},
                 {path: 'photo/list', name: '图片列表', component: Photos},
                 {path: 'photo/featured', name: '推荐图片', component: FeaturedPhotos},
-                {path: 'visit_record/list', name: '访问记录', component: VisitRecordList},
-                {path: 'config/list', name: '配置中心', component: ConfigList},
+                {path: 'system/visit_record/list', name: '访问记录', component: VisitRecordList},
+                {path: 'system/config/list', name: '配置中心', component: ConfigList},
+                {path: 'system/Comments/list', name: '评论中心', component: Comments},
+                {path: 'system/Notice/list', name: '公告中心', component: Notice},
+                {path: 'link/list', name: '友情链接', component: LinkList},
+                {path: 'link_exchange/list', name: '友链申请', component: LinkExchangeList},
+                {path:'system/MessageList',name:'留言中心',component:MessageList}
             ]
         },
         { path: '/login', name: 'Login', component: Login },

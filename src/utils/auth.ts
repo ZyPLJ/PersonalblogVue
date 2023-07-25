@@ -41,7 +41,7 @@ export const getToken = () => {
  */
 export const logincookie = (token, username, expiration) => {
     // 保存token到Cookie
-    Cookies.set('token', token)
+    Cookies.set('token', token,{ expires: 7 })
     // 保存登录数据到本地会话
     localStorage.setItem('user', username)
     localStorage.setItem('expiration', expiration)

@@ -31,9 +31,10 @@ export const getStatusList = () => {
 }
 
 // 文章上传
-export const upload = (Categoryname, file) => {
+export const upload = (Categoryname, parentId,file) => {
   let formData = new FormData()
   formData.append('Categoryname', Categoryname)
+  formData.append('Parent', parentId)
   formData.append('file', file)
 
   return axios({

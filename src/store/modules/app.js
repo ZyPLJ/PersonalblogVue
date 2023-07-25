@@ -1,8 +1,8 @@
 export default {
   state: {
-    appName: "ZYBlog",  // 应用名称
-    themeColor: "#14889A",  // 主题颜色
-    oldThemeColor: "#14889A",   // 上一次主题颜色
+    appName: "ZY 知识库",  // 应用名称
+    themeColor: "#FFFFFF",  // 主题颜色
+    oldThemeColor: "#FFFFFF",   // 上一次主题颜色
     collapse: false,  // 导航栏收缩状态
     menuRouteLoaded: false,    // 菜单和路由是否已经加载
     fullscreen: false,      // 全屏状态

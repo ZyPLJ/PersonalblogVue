@@ -3,7 +3,6 @@
     t="1492500959545"
     @click="onClick == null ? emptyClick : onClick"
     class="hamburger"
-    fill="#fff"
     fill-opacity="0.8"
     :class="{ 'is-active': props.isActive }"
     viewBox="0 0 1024 1024"

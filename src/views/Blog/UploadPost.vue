@@ -17,12 +17,34 @@
             :reserve-keyword="false"
             v-on:change="handleCategoryChange"
           >
-            <el-option
-              v-for="item in categories"
+            <template v-for="item in categories">
+              <el-option
+              v-if="item.parentId == 0"
               :key="item.id"
               :label="item.name"
               :value="item.name"
             />
+            </template>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="二级分类" prop="categoryId">
+          <el-select
+            v-model="form.ParentId"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="请选择分类"
+            :reserve-keyword="false"
+            v-on:change="handleCategoryChange2"
+          >
+          <template v-for="item in categories">
+              <el-option
+                v-if="item.parentId !== 0 && item.parentId == currentCategoryId"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+          </template>
           </el-select>
         </el-form-item>
       </el-form>
@@ -66,6 +88,7 @@ const currentCategoryId = ref(0);
 const form = ref();
 form.value = {
   Categoryname: null,
+  Parent:null,
   file: null,
 };
 
@@ -74,8 +97,17 @@ const loadCategories = () => {
     .then((res) => (categories.value = res.data))
     .catch((res) => ElMessage.error(`获取文章分类出错：${res.message}`));
 };
-const handleCategoryChange = (Categoryname) => {
-  currentCategoryName.value = Categoryname;
+const handleCategoryChange = (selectedCategoryName) => {
+  const selectedItem = categories.value.find(
+    (item) => item.name === selectedCategoryName
+  );
+
+  currentCategoryId.value = selectedItem.id;
+  form.value.Categoryname = selectedCategoryName;
+};
+const handleCategoryChange2 = (selectedCategoryName) => {
+  console.log(selectedCategoryName)
+  form.value.Parent = selectedCategoryName;
 };
 const onUploadChange = (file, fileList) => {
   const isIMAGE = file.raw.type === "application/x-zip-compressed";
@@ -91,7 +123,7 @@ const onUploadChange = (file, fileList) => {
   form.value.file = file;
 };
 const submitUpload = () => {
-  upload(form.value.Categoryname, form.value.file.raw).then((res) => {
+  upload(form.value.Categoryname,form.value.Parent, form.value.file.raw).then((res) => {
     if (res.successful) {
       ElMessage({ message: "上传文章成功", type: "success" });
       router.push("/post/list");

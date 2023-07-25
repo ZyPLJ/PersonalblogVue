@@ -57,6 +57,7 @@
 
 <script setup lang='ts'>
 // import * as auth from "@/utils/auth";
+import {defineProps} from "vue"
 import {  useStore } from "vuex";
 const store = useStore()
  
@@ -64,6 +65,7 @@ const store = useStore()
 const props = defineProps({
   user: {
     type: Object,
+    // eslint-disable-next-line vue/require-valid-default-prop
     default: {
       name: "admin",
       avatar: "@/assets/user.png",

@@ -61,6 +61,7 @@
 import { ref } from "vue";
 import { getList } from "../../http/modules/visitRecord";
 import { ElMessage } from "element-plus";
+import formatTime from '../../utils/dateTime';
 
 const currentPage = ref(1);
 const pageSize = ref(20);
@@ -71,13 +72,14 @@ const data = ref();
 data.value = [];
 
 const loadVisitRecord = () => {
+  const format = 'yyyy-MM-dd HH:mm:ss';
   getList(currentPage.value, pageSize.value)
     .then((res) => {
       console.log(res);
       totalCount.value = res.pagination.totalItemCount;
       data.value = res.data;
       data.value.forEach((item) => {
-        item.timeStr = item.time.toLocaleString('zh-CN',{timeZone:'Asia/Shanghai'})
+        item.timeStr = formatTime(item.time,format)
       });
     })
     .catch((res) => ElMessage.error(`获取访问记录列表出错：${res.message}`));

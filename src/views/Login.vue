@@ -8,7 +8,7 @@
     ref="ruleFormRef"
   >
     <div class="title h2">
-      <h2>StarBlog</h2>
+      <h2>ZY知识库</h2>
       <h4>管理后台登录</h4>
     </div>
     <el-form-item prop="username">
@@ -134,7 +134,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
   margin: 100px auto;
   width: 350px;
   padding: 35px 35px 15px 35px;
-  background: #fff;
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;
 

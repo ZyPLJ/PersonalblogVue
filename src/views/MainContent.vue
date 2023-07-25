@@ -52,11 +52,9 @@
     </div>
     <!-- 主内容区域 -->
     <div class="main-content">
-      <keep-alive>
-        <transition name="fade" mode="out-in">
-          <router-view></router-view>
-        </transition>
-      </keep-alive>
+      <div class="content">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -154,7 +152,7 @@ console.log(mainTabs);
   left: 1px;
   right: 1px;
   bottom: 0;
-  background: rgba(67, 69, 70, 0.1);
+  background: rgba(245,246,251, 1);
 
   .tabs {
     position: fixed;
@@ -166,7 +164,7 @@ console.log(mainTabs);
     height: 40px;
     line-height: 40px;
     font-size: 14px;
-    background: rgb(255, 253, 255);
+    background: rgb(255, 253, 255) !important;
     border-color: rgba(200, 206, 206, 0.5);
     // border-left-width: 1px;
     // border-left-style: solid;
@@ -184,12 +182,12 @@ console.log(mainTabs);
     font-size: 14px;
     line-height: 40px;
     cursor: pointer;
+    background: rgb(255, 253, 255) !important;
     border-color: rgba(200, 206, 206, 0.5);
     border-left-width: 1px;
     border-left-style: solid;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    background: rgba(255, 255, 255, 1);
   }
 
   .tabs-tools:hover {
@@ -202,7 +200,14 @@ console.log(mainTabs);
     left: 5px;
     right: 5px;
     bottom: 5px;
-    padding: 5px;
+    padding: 35px;
+    overflow: auto; 
+  }
+  .content{
+    padding: 15px;
+    background: #fff;
+    border: 1px solid rgb(239, 239, 245);
+    border-radius:10px;
   }
 }
 

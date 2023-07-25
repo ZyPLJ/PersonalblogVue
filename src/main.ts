@@ -14,6 +14,12 @@ import 'bootstrap/dist/css/bootstrap-utilities.css'
 // DataV 图表
 import dataV from '@jiaminghi/data-view'
 
+//echart 图表
+import echarts from './utils/echarts';
+
+//暗黑主题
+import 'element-plus/theme-chalk/dark/css-vars.css'
+
 // // markdown编辑器
 // import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
 // import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
@@ -76,6 +82,8 @@ VMdEditor.use(githubTheme, {
 });
 
 const app = createApp(App)
+
+app.config.globalProperties.$echarts = echarts
 
 // app.use(VMdEditor)
 app.use(VMdEditor);

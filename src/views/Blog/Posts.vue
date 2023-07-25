@@ -1,13 +1,27 @@
 <template>
   <el-container>
+    <el-header height="60px">
+      <div>
+        <el-button 
+        style="background-color: #316C72FF;color:#FFF;height: 34px;line-height: 34px;"
+        @click="addPost">
+            <el-icon class="el-icon--left">
+              <i class="fa fa-plus"></i>
+            </el-icon>
+            新建文章
+          </el-button>
+          <el-button type="danger" :disabled="!hasSelection">删除</el-button>
+          <el-button @click="toggleSelection()" :disabled="!hasSelection">取消选择</el-button>
+        </div>
+    </el-header>
     <el-header height="30px">
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
-          <el-col :span="7">
+          <el-col :span="12">
             <el-input v-model="search"
-                      placeholder="请输入关键字" prefix-icon="el-icon-search"></el-input>
+                placeholder="请输入关键字"></el-input>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="10">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
             <el-select v-model="currentCategoryName" clearable filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
@@ -17,19 +31,12 @@
             </el-select>
           </el-col>
         </el-row>
-        <div>
-          <el-button @click="addPost">添加</el-button>
-          <el-button type="danger" :disabled="!hasSelection">删除</el-button>
-          <el-button @click="toggleSelection()" :disabled="!hasSelection">取消选择</el-button>
-        </div>
       </el-row>
     </el-header>
     <el-main>
-      <!-- 只要在el-table元素中定义了height属性，即可实现固定表头的表格，而不需要额外的代码。 -->
       <el-table
         ref="table"
         :data="filterTableData"
-        height="730"
         stripe
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -40,36 +47,39 @@
         <el-table-column
           prop="id"
           label="ID"
-          width="180"/>
+          width="150"/>
         <el-table-column
           prop="title"
           label="标题"
           sortable
           :show-overflow-tooltip="true"
-          width="400"/>
+          width="250"/>
         <el-table-column
           prop="creationTime"
           label="创建时间"
           sortable
-          width="150"/>
+          width="180"/>
         <el-table-column
           prop="lastUpdateTime"
           label="上次更新"
           sortable
-          width="150"/>
+          width="180"/>
         <el-table-column
           prop="categories.name"
           label="分类"/>
         <el-table-column
+        prop="viewCount"
+        label="浏览量"/>
+        <el-table-column
           fixed="right"
           label="操作"
-          width="150">
+          width="230">
           <template #default="scope">
-            <el-link type="info" @click="onItemEditClick(scope.row)">编辑</el-link>
-            <el-link type="danger" @click="onItemDeleteClick(scope.row)">删除</el-link>
-            <el-dropdown @command="cmd=>onItemDropdownClick(scope.row,cmd)">
-              <el-button type="text" size="small">
-                更多<i class="el-icon-arrow-down el-icon--right"></i>
+            <el-button type="info" @click="onItemEditClick(scope.row)">编辑</el-button>
+            <el-button type="danger" @click="onItemDeleteClick(scope.row)">删除</el-button>
+            <el-dropdown @command="cmd=>onItemDropdownClick(scope.row,cmd)" style="margin-left:10px">
+              <el-button type="primary">
+                更多
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
@@ -104,7 +114,7 @@ import {ref,computed} from 'vue'
 import {getAll} from '../../http/modules/category'
 import {getList,deleteItem,setFeatured,cancelFeatured,setTop} from '../../http/modules/blogPost'
 import { ElMessageBox,ElMessage } from "element-plus";
-import time from '../../utils/dateTime';
+import formatTime from '../../utils/dateTime';
 import { useRoute,useRouter } from "vue-router";
 
 const router = useRouter()
@@ -132,6 +142,7 @@ const loadCategories = ()=>{
       }).catch(res => ElMessage.error(`加载分类列表出错：${res.message}`))
 }
 const loadBlogPosts = ()=>{
+  const format = 'yyyy-MM-dd HH:mm:ss';
     getList(
         false, "",
         currentCategoryId.value, search.value, sortBy.value,
@@ -141,8 +152,8 @@ const loadBlogPosts = ()=>{
         totalCount.value = res.pagination.totalItemCount
         posts.value = res.data
         posts.value.forEach(item => {
-          item.creationTime = time.formatTime(item.creationTime)
-          item.lastUpdateTime = time.formatTime(item.lastUpdateTime)
+          item.creationTime = formatTime(item.creationTime,format)
+          item.lastUpdateTime = formatTime(item.lastUpdateTime,format)
         })
       }).catch(res => ElMessage.error(`获取文章列表出错：${res.message}`))
 }

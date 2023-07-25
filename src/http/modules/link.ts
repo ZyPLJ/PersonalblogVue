@@ -2,45 +2,37 @@ import axios from '../axios'
 
 export const getAll = () => {
   return axios({
-    url: 'Config',
+    url: 'Link',
     method: 'get',
   })
 }
 
 export const get = itemId => {
   return axios({
-    url: `Config/${itemId}/`,
+    url: `Link/${itemId}/`,
     method: 'get',
   })
 }
 
 export const deleteItem = itemId => {
   return axios({
-    url: `Config/${itemId}/`,
+    url: `Link/${itemId}/`,
     method: 'delete'
   })
 }
 
-export const add = data =>{
+export const add = data => {
   return axios({
-    url: `Config`,
+    url: `Link`,
     method: 'post',
-    headers: {'Content-Type': 'application/json'},
     data
   })
 }
 
 export const update = data => {
   return axios({
-    url: `Config/${data.key}/`,
+    url: `Link/${data.id}/`,
     method: 'put',
     data
-  })
-}
-
-export const isshow = (id) =>{
-  return axios({
-    url: `Config/`+ id,
-    method: 'get',
   })
 }

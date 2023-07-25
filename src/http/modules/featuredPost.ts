@@ -32,3 +32,11 @@ export const deleteItem = itemId => {
     method: 'delete'
   })
 }
+
+// 修改排序字段
+export const updateSort = (Id,newId) => {
+  return axios({
+    url: `FeaturedPost/${Id}/${newId}`,
+    method: 'put'
+  })
+}

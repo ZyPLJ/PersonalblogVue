@@ -1,16 +1,12 @@
 <template>
   <div
     class="header"
-    :style="{ background: themeColor, display: fullscreen ? 'none' : '' }"
     :class="collapse ? 'position-collapse-left' : 'position-left'"
   >
     <!-- 导航收缩 -->
     <div class="hamburg">
       <el-menu
         class="el-menu-demo"
-        :background-color="themeColor"
-        text-color="#fff"
-        :active-text-color="themeColor"
       >
         <el-menu-item index="1" @click="onCollapse">
           <Hamburger :isActive="collapse"></Hamburger>
@@ -18,63 +14,99 @@
       </el-menu>
     </div>
     <!-- 导航菜单 -->
-    <span class="navbar">
-      <el-menu
-        :default-active="activeIndex"
-        class="el-menu-demo"
-        :background-color="themeColor"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        @select="selectNavBar()"
-      >
-        <el-menu-item index="1" @click="router.push('/')">主页</el-menu-item>
-        <!-- <el-menu-item
-          index="2"
-          @click="openWindow('https://github.com/Deali-Axy')"
-          >菜单1</el-menu-item
-        >
-        <el-menu-item
-          index="3"
-          @click="openWindow('https://www.cnblogs.com/deali')"
-          >菜单2</el-menu-item
-        > -->
-      </el-menu>
-    </span>
-    <!-- 工具栏 -->
-     <span class="toolbar">
-      <el-menu class="el-menu-demo" 
-      :background-color="themeColor" 
-      text-color="#14889A"
-      :active-text-color="themeColor"
+    <el-menu
+      :default-active="activeIndex"
+      class="el-menu-demo"
       mode="horizontal"
-              style="height:60px"
-              >
-        <el-menu-item index="1">
-          <!-- 主题切换 -->
-          <ThemePicker class="theme-picker" :default="themeColor"
-                        @onThemeChange="onThemeChange">
-          </ThemePicker>
-        </el-menu-item>
-        <el-menu-item>
-          <!-- 用户信息 -->
-          <span class="user-info"><img :src="user.avatar"/>{{ user.name }}</span>
-          <el-popover ref="popover-personal" placement="bottom-end" trigger="click" :visible-arrow="false">
-            <PersonalPanel :user="user"></PersonalPanel>
-          </el-popover>
-        </el-menu-item>
-      </el-menu>
-    </span>
+      :ellipsis="false"
+      @select="handleSelect"
+      style="border:0"
+      router
+    >
+    <el-breadcrumb separator="/" style="line-height: 60px;margin-left:15px;">
+        <span v-for="(crumb, index) in breadcrumbs" :key="index">
+          <el-breadcrumb-item :to="crumb.path">
+            {{ crumb.name }}
+          </el-breadcrumb-item>
+          <span v-if="index < breadcrumbs.length - 1"></span>
+        </span>
+      </el-breadcrumb>
+      <div class="flex-grow" />
+      <div @click="tooggleTheme">
+        <el-icon>
+          <i class="fa fa-sun-o"></i>
+        </el-icon>
+      </div>
+      <el-sub-menu index="2">
+        <template #title>{{ user.name }}</template>
+        <el-menu-item index="/login" @click="tuichu">退出</el-menu-item>
+      </el-sub-menu>
+    </el-menu>
   </div>
 </template>
 
 <script setup lang='ts'>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed,inject } from "vue";
 import { mapState, useStore } from "vuex";
+import { useRoute,useRouter } from 'vue-router';
 import Hamburger from "../components/Hamburger/index.vue";
-import ThemePicker from "../components/ThemePicker/index.vue";
-import NoticePanel from "./Auth/NoticePanel.vue";
-import MessagePanel from "./Auth/MessagePanel.vue";
-import PersonalPanel from "./Auth/PersonalPanel.vue";
+import { logout } from "../utils/auth";
+
+const tuichu = ()=>{
+  logout();
+}
+
+const theme = inject('theme')
+const tooggleTheme = () =>{
+  theme.toggleDark()
+}
+
+
+interface Breadcrumb {
+  name: string;
+  path: string;
+}
+
+const breadcrumbs = computed<Breadcrumb[]>(() => {
+  const routes = useRoute().matched;
+  const result: Breadcrumb[] = [];
+  console.log(routes)
+  routes.forEach(route => {
+    if (route.name) {
+      result.push({
+        name: route.name,
+        path: route.path
+      });
+    }
+  });
+  const routePath = useRoute().path;
+  if (routePath.startsWith('/link')) {
+    result.unshift({
+      name: '友链管理',
+      path: '/link/list'
+    });
+  }
+  if (routePath.startsWith('/system')) {
+    result.unshift({
+      name: '系统管理',
+      path: '/system/visit_record/list'
+    });
+  }
+  if (routePath.startsWith('/photo')) {
+    result.unshift({
+      name: '摄影',
+      path: '/photo/list'
+    });
+  }
+  if (routePath.startsWith('/post')) {
+    result.unshift({
+      name: '博客',
+      path: '/post/list'
+    });
+  }
+  return result;
+});
+
 
 declare var require: any;
 const store = useStore();
@@ -114,6 +146,8 @@ onMounted(() => {
 const themeColor = computed(() => store.state.app.themeColor);
 const collapse = computed(() => store.state.app.collapse);
 const fullscreen = computed(() => store.state.app.fullscreen);
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -124,9 +158,7 @@ const fullscreen = computed(() => store.state.app.fullscreen);
   z-index: 1030;
   height: 60px;
   line-height: 60px;
-  border-color: rgba(180, 190, 190, 0.8);
-  border-left-width: 1px;
-  border-left-style: solid;
+  box-shadow: 0 1px 2px #00152914;
 }
 
 .hamburg,
@@ -136,7 +168,7 @@ const fullscreen = computed(() => store.state.app.fullscreen);
 
 .toolbar {
   float: right;
-    height: 60px;
+  height: 60px;
   line-height: 60px;
 }
 
@@ -164,5 +196,8 @@ const fullscreen = computed(() => store.state.app.fullscreen);
 
 .position-collapse-left {
   left: 65px;
+}
+.flex-grow {
+  flex-grow: 1;
 }
 </style>

@@ -10,11 +10,10 @@
 
 
 <script setup lang='ts'>
-import { onMounted, ref,watch } from "vue";
+import { onMounted, ref,watch,defineEmits } from "vue";
 import { ElMessage } from "element-plus";
 
 declare var require: any
-const version = require("element-plus/package.json").version; // element-ui
 const ORIGINAL_THEME = "#409EFF"; // default color
 
 const props = defineProps({
