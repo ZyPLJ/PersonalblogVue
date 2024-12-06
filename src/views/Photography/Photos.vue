@@ -19,7 +19,7 @@
       >
         <template #item="{ item }">
           <el-card :body-style="{ padding: '0px' }">
-            <LazyImg :url="item.url + '?t=' + Math.random()" :height="item.height" :width="item.width"/>
+            <LazyImg :url="item.url" :height="item.height" :width="item.width"/>
           </el-card>
           <PhotoCard :photo="item" v-on:onItemDeleted="loadPhotos"></PhotoCard>
         </template>
@@ -62,7 +62,7 @@ import AddPhotoDialog from "../Photography/AddPhotoDialog.vue";
 import { LazyImg, Waterfall } from "vue-waterfall-plugin-next";
 import "vue-waterfall-plugin-next/style.css";
 import PhotoCard from "../../components/PhotoCard/index.vue";
-import { ref,unref  } from "vue";
+import { ref,onMounted  } from "vue";
 import { getList } from "../../http/modules/photo";
 import { getAll } from "../../http/modules/config"
 import { ElMessage } from "element-plus";
@@ -77,20 +77,24 @@ const host = ref()
 photos.value = [];
 host.value = []
 
+const loadPhotos = async () => {
+  try {
+    // 获取所有的配置
+    const allRes = await getAll();
+    host.value = allRes.data;
 
-const loadPhotos = () => {
-  getAll()
-    .then((res) => (host.value = res.data))
-    .catch((res) => ElMessage.error(`获取配置列表出错：${res.message}`));
-  getList(currentPage.value, pageSize.value).then((res) => {
-    totalCount.value = res.pagination.totalItemCount;
-    photos.value = res.data.map((item) => ({
+    // 获取当前页的照片
+    const listRes = await getList(currentPage.value, pageSize.value);
+    totalCount.value = listRes.pagination.totalItemCount;
+    photos.value = listRes.data.map((item) => ({
       ...item,
-      //这是后台项目的路径
-      url: host.value[0]?.value +'/media/' + item.yPath
-      // url:'https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF'
+      // 这是后台项目的路径
+      url: host.value[0]?.value + '/media/' + item.yPath
     }));
-  });
+  } catch (error) {
+    // 处理错误
+    ElMessage.error(`获取配置列表出错：${error.message}`);
+  }
 };
 const handlePageSizeChange = (pageSize) => {
   pageSize.value = pageSize;
@@ -108,7 +112,9 @@ const ShowDlog = () => {
   console.log("12123123");
   addPhotoDialog.value.show();
 };
-loadPhotos();
+onMounted(() => {
+  loadPhotos();
+});
 </script>
 
 <style scoped>
