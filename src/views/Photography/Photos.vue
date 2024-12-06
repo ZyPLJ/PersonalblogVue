@@ -4,7 +4,7 @@
       <el-row type="flex" justify="start">
         <div>
           <el-button @click="ShowDlog">添加</el-button>
-          <el-button type="danger">批量删除</el-button>
+          <!-- <el-button type="danger">批量删除</el-button> -->
         </div>
       </el-row>
     </el-header>
@@ -87,7 +87,7 @@ const loadPhotos = () => {
     photos.value = res.data.map((item) => ({
       ...item,
       //这是后台项目的路径
-      url: host.value[0].value +'/media/' + item.filePath
+      url: host.value[0]?.value +'/media/' + item.yPath
       // url:'https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF'
     }));
   });

@@ -47,6 +47,29 @@
           </template>
           </el-select>
         </el-form-item>
+        <el-form-item label="文章标签" >
+          <el-select
+              v-model="form.Tag"
+              multiple
+              placeholder="请选择标签"
+              style="width: 240px"
+              v-on:change="handleTag"
+            >
+              <el-option
+                v-for="item in Tag"
+                :key="item.id"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select>
+        </el-form-item>
+        <el-form-item label="定时发布" >
+            <el-date-picker
+          v-model="form.publishTime"
+          type="datetime"
+          placeholder="Select date and time"
+        />
+        </el-form-item>
       </el-form>
       <el-upload
         ref="upload"
@@ -73,8 +96,10 @@
 import { ref, computed } from "vue";
 import { getAll } from "../../http/modules/category";
 import { upload } from "../../http/modules/blog";
+import { getAllTag } from "../../http/modules/Tag";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import formatTime from '../../utils/dateTime';
 
 const router = useRouter();
 
@@ -85,11 +110,16 @@ const categories = ref();
 categories.value = [];
 const currentCategoryName = ref("");
 const currentCategoryId = ref(0);
+
+//标签
+const Tag = ref([])
 const form = ref();
 form.value = {
   Categoryname: null,
   Parent:null,
   file: null,
+  Tag:null,
+  publishTime:null
 };
 
 const loadCategories = () => {
@@ -97,6 +127,12 @@ const loadCategories = () => {
     .then((res) => (categories.value = res.data))
     .catch((res) => ElMessage.error(`获取文章分类出错：${res.message}`));
 };
+
+const loadTags = async() =>{
+  const response = await getAllTag()
+  Tag.value = response.data
+}
+
 const handleCategoryChange = (selectedCategoryName) => {
   const selectedItem = categories.value.find(
     (item) => item.name === selectedCategoryName
@@ -109,6 +145,10 @@ const handleCategoryChange2 = (selectedCategoryName) => {
   console.log(selectedCategoryName)
   form.value.Parent = selectedCategoryName;
 };
+const handleTag = (selectedTagName) =>{
+  console.log(selectedTagName)
+  form.value.Tag = selectedTagName;
+}
 const onUploadChange = (file, fileList) => {
   const isIMAGE = file.raw.type === "application/x-zip-compressed";
   if (!isIMAGE) {
@@ -123,14 +163,16 @@ const onUploadChange = (file, fileList) => {
   form.value.file = file;
 };
 const submitUpload = () => {
-  upload(form.value.Categoryname,form.value.Parent, form.value.file.raw).then((res) => {
+  const format = 'yyyy-MM-dd HH:mm:ss';
+  form.value.publishTime = formatTime(form.value.publishTime,format)
+  upload(form.value.Categoryname,form.value.Parent, form.value.Tag,form.value.publishTime,form.value.file.raw).then((res) => {
     if (res.successful) {
       ElMessage({ message: "上传文章成功", type: "success" });
       router.push("/post/list");
     }
   });
 };
-
+loadTags()
 loadCategories()
 </script>
 

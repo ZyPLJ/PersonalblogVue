@@ -18,7 +18,22 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="19">
+        <el-col :span="3">
+          <el-select
+              v-model="postTag"
+              multiple
+              placeholder="请选择标签"
+              v-on:change="handleTag"
+            >
+              <el-option
+                v-for="item in Tag"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id" 
+              />
+            </el-select>
+        </el-col>
+        <el-col :span="15">
           <el-input v-model="postTitle" placeholder="文章标题"></el-input>
         </el-col>
         <el-col :span="1">
@@ -58,6 +73,7 @@ import { uploadImage, get,add,update } from "../../http/modules/blogPost";
 import { getAll } from "../../http/modules/category";
 import { useRoute, useRouter } from "vue-router";
 import { ElNotification, ElMessage,ElMessageBox  } from "element-plus";
+import { getAllTag } from "../../http/modules/Tag";
 
 const route = useRoute();
 const router = useRouter();
@@ -66,6 +82,7 @@ const store = useStore();
 const mode = ref("new");
 const postTitle = ref("");
 const postCategoryName = ref("");
+const postTag = ref("")
 const postCategoryId = ref(0);
 const postContent = ref("");
 const postSummary = ref("");
@@ -73,6 +90,8 @@ const post = ref();
 post.value = null;
 const categories = ref();
 categories.value = [];
+//标签
+const Tag = ref([])
 
 // 全屏切换
 const fullscreenChange = (isFullscreen) => {
@@ -91,6 +110,7 @@ const init = () => {
         postSummary.value = post.value.summary;
         postCategoryId.value = post.value.categoryId;
         postCategoryName.value = post.value.categories.name;
+        postTag.value = post.value.postTags.map(pt => pt.tagId);
         ElNotification.info({
           title: "当前模式：修改文章",
           message: `加载文章：${postTitle.value}`,
@@ -135,6 +155,11 @@ const categoryChange = (categoryId) => {
 const loadCategories = () => {
   getAll().then((res) => (categories.value = res.data));
 };
+const loadTags = async() =>{
+  const response = await getAllTag()
+  Tag.value = response.data
+}
+
 const onEditorSave = (text, html)=>{
   save()
 }
@@ -163,11 +188,16 @@ const onSummaryClick = ()=>{
 }
 
 const save = () => {
+  const tags = postTag.value.map(tagId => {
+    const tag = Tag.value.find(t => t.id === tagId);
+    return tag ? { id: tag.id, name: tag.name } : null;
+  });
   let p = post.value;
   p.title = postTitle.value;
   p.content = postContent.value;
   p.summary = postSummary.value;
   p.categoryId = postCategoryId.value;
+  p.tags = tags
   if(mode.value === 'new'){
     add(post.value).then(res=>{
       ElMessage.success(`保存成功。${res.message}`)
@@ -183,6 +213,7 @@ const save = () => {
 };
 
 init()
+loadTags()
 loadCategories()
 </script>
 

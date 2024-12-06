@@ -54,6 +54,10 @@
         <el-icon :size="15"><i class="fa fa-upload"></i></el-icon>
         <span slot="title">打包上传</span>
       </el-menu-item>
+      <el-menu-item index="/post/Tag">
+        <el-icon :size="15"><i class="fa fa-tags"></i></el-icon>
+        <span slot="title">标签管理</span>
+      </el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="photo" :route="{ meta: { breadcrumbName: '摄影' } }">
       <template #title>

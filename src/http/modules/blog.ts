@@ -31,10 +31,14 @@ export const getStatusList = () => {
 }
 
 // 文章上传
-export const upload = (Categoryname, parentId,file) => {
-  let formData = new FormData()
+export const upload = (Categoryname, parentId,tags,publishTime,file) => {
+  const formData = new FormData()
   formData.append('Categoryname', Categoryname)
   formData.append('Parent', parentId)
+  tags.forEach((tag) => {
+    formData.append('tags[]', tag); // Append each tag as a separate array element
+  });
+  formData.append('publishTime',publishTime)
   formData.append('file', file)
 
   return axios({

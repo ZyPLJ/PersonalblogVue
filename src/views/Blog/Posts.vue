@@ -10,23 +10,30 @@
             </el-icon>
             新建文章
           </el-button>
-          <el-button type="danger" :disabled="!hasSelection">删除</el-button>
-          <el-button @click="toggleSelection()" :disabled="!hasSelection">取消选择</el-button>
+          <!-- <el-button type="danger" :disabled="!hasSelection">删除</el-button> -->
+          <!-- <el-button @click="toggleSelection()" :disabled="!hasSelection">取消选择</el-button> -->
         </div>
     </el-header>
     <el-header height="30px">
       <el-row type="flex" justify="space-between">
         <el-row :gutter="10">
-          <el-col :span="12">
+          <el-col :span="10">
             <el-input v-model="search"
                 placeholder="请输入关键字"></el-input>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="8">
             <!-- 分类筛选 -->
             <!-- 为el-select添加filterable属性即可启用搜索功能。默认情况下，Select 会找出所有label属性包含输入值的选项。 -->
             <el-select v-model="currentCategoryName" clearable filterable placeholder="请选择分类" v-on:change="handleCategoryChange">
               <el-option
                 v-for="item in categories"
+                :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
+          </el-col>
+          <el-col :span="6">
+            <el-select v-model="TagId" clearable filterable placeholder="请选择标签" v-on:change="handleTag">
+              <el-option
+                v-for="item in Tags"
                 :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-col>
@@ -54,16 +61,28 @@
           sortable
           :show-overflow-tooltip="true"
           width="250"/>
+        <el-table-column label="标签">
+            <template #default="scope">
+              <Tag :tags="scope.row.tags" />
+            </template>
+      </el-table-column>
+      <el-table-column label="状态">
+        <template #default="{ row }">
+          <el-tag class="ml-2" :type="row.status === 1 || row.status === null ? 'success' : 'info'">
+            {{ row.status === 1 || row.status === null ? '已发布' : '未发布' }}
+          </el-tag>
+        </template>
+      </el-table-column>
         <el-table-column
           prop="creationTime"
           label="创建时间"
           sortable
-          width="180"/>
+          width="100"/>
         <el-table-column
           prop="lastUpdateTime"
           label="上次更新"
           sortable
-          width="180"/>
+          width="100"/>
         <el-table-column
           prop="categories.name"
           label="分类"/>
@@ -113,9 +132,11 @@
 import {ref,computed} from 'vue'
 import {getAll} from '../../http/modules/category'
 import {getList,deleteItem,setFeatured,cancelFeatured,setTop} from '../../http/modules/blogPost'
+import { getAllTag } from "../../http/modules/Tag";
 import { ElMessageBox,ElMessage } from "element-plus";
 import formatTime from '../../utils/dateTime';
 import { useRoute,useRouter } from "vue-router";
+import Tag from '../../components/Tag.vue';
 
 const router = useRouter()
 
@@ -133,6 +154,8 @@ const currentCategoryName = ref("")
 const selectedPosts = ref()
 selectedPosts.value = []
 const hasSelection = ref(false)
+const TagId = ref(null)
+const Tags = ref([])
 
 const loadCategories = ()=>{
     getAll().then(res => {
@@ -141,11 +164,17 @@ const loadCategories = ()=>{
         categories.value = categorie
       }).catch(res => ElMessage.error(`加载分类列表出错：${res.message}`))
 }
+
+const loadTags = async() =>{
+  const response = await getAllTag()
+  Tags.value = response.data.data
+}
+
 const loadBlogPosts = ()=>{
   const format = 'yyyy-MM-dd HH:mm:ss';
     getList(
         false, "",
-        currentCategoryId.value, search.value, sortBy.value,
+        currentCategoryId.value, search.value, sortBy.value,TagId.value,
         currentPage.value, pageSize.value
       ).then(res => {
         console.log(res)
@@ -210,6 +239,15 @@ const onItemDropdownClick = (post,command)=>{
 
 const handleCategoryChange = (categoryId)=>{
   currentCategoryId.value = categoryId
+  loadBlogPosts()
+}
+const handleTag = (selectedTagName) =>{
+  if(selectedTagName){
+    TagId.value = selectedTagName;
+  }else{
+    TagId.value = null;
+  }
+  loadBlogPosts()
 }
 const handlePageSizeChange = (p) =>{
   pageSize.value = p
@@ -219,7 +257,7 @@ const handleCurrentPageChange = (page) =>{
       currentPage.value = page
       loadBlogPosts()
 }
-
+loadTags()
 loadCategories()
 loadBlogPosts()
 </script>

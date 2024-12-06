@@ -76,6 +76,7 @@ const submitUpload = async (formEl: FormInstance | undefined) => {
               hide()
               if (!formEl) return
               formEl.resetFields()
+              fileList.value = []
             }
       })
     } else {

@@ -17,13 +17,14 @@ export const getList = (
   categoryId = 0,
   search = '',
   sortBy = '',
+  TagId = 0,
   page = 1,
   pageSize = 20
 ) => {
   return axios({
     url: 'BlogPost',
     method: 'get',
-    params: {onlyPublished, status, categoryId, search, sortBy, page, pageSize}
+    params: {onlyPublished, status, categoryId, search, sortBy,TagId, page, pageSize}
   })
 }
 

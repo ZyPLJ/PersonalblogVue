@@ -21,6 +21,7 @@ import Notice from '../views/Notice/list.vue'
 import LinkList from '../views/Link/List.vue'
 import LinkExchangeList from '../views/LinkExchange/List.vue'
 import MessageList from '../views/Message/list.vue'
+import PostTag from '../views/Tag/PostTag.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -43,6 +44,7 @@ const router = createRouter({
                 {path: 'post/list', name: '文章列表', component: Posts},
                 {path: 'post/edit/:id', name: '编辑文章', component: EditPost},
                 {path: 'post/new', name: '新增文章', component: EditPost},
+                {path:'post/Tag',name:'标签管理',component:PostTag},
                 {path: 'post/featured', name: '推荐文章', component: FeaturedPosts},
                 {path: 'post/top', name: '置顶文章', component: TopPost},
                 {path: 'post/upload', name: '上传文章', component: UploadPost},

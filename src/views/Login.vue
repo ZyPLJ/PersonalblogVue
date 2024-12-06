@@ -95,9 +95,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
         Username: ruleForm.username,
         Password: ruleForm.password,
       };
-      const res = await login(JSON.stringify(data));
-      console.log(res.data.statusCode);
       try {
+        const res = await login(JSON.stringify(data));
         if (res.data.statusCode == 200) {
           //保存登录信息
           logincookie(res.data.data.token, data.Username, res.data.data.expiration)
